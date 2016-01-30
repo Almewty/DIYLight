@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lights", "Lights\Lights.csproj", "{64F8DE19-5F35-4285-B22B-312431FF4AFA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightsControl", "LightsControl\LightsControl.csproj", "{BD0441C7-BD6F-44CB-BD30-60B791F72EB0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Solid.Arduino", "Solid.Arduino\Solid.Arduino.csproj", "{FDF9E431-2390-4C7B-AE60-10183439A683}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{64F8DE19-5F35-4285-B22B-312431FF4AFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64F8DE19-5F35-4285-B22B-312431FF4AFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64F8DE19-5F35-4285-B22B-312431FF4AFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64F8DE19-5F35-4285-B22B-312431FF4AFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD0441C7-BD6F-44CB-BD30-60B791F72EB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD0441C7-BD6F-44CB-BD30-60B791F72EB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD0441C7-BD6F-44CB-BD30-60B791F72EB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD0441C7-BD6F-44CB-BD30-60B791F72EB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDF9E431-2390-4C7B-AE60-10183439A683}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDF9E431-2390-4C7B-AE60-10183439A683}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDF9E431-2390-4C7B-AE60-10183439A683}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDF9E431-2390-4C7B-AE60-10183439A683}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
