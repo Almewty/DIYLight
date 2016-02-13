@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lights", "Lights\Lights.csproj", "{64F8DE19-5F35-4285-B22B-312431FF4AFA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmbiLED", "Lights\AmbiLED.csproj", "{64F8DE19-5F35-4285-B22B-312431FF4AFA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightsControl", "LightsControl\LightsControl.csproj", "{BD0441C7-BD6F-44CB-BD30-60B791F72EB0}"
 EndProject

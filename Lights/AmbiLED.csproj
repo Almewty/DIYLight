@@ -7,8 +7,8 @@
     <ProjectGuid>{64F8DE19-5F35-4285-B22B-312431FF4AFA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Arduino.Lights</RootNamespace>
-    <AssemblyName>Arduino.Lights</AssemblyName>
+    <RootNamespace>RustyDevelopment.AmbiLED</RootNamespace>
+    <AssemblyName>RustyDevelopment.AmbiLED</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -55,9 +55,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DesktopCapture.cs" />
-    <Compile Include="Lights.cs" />
+    <Compile Include="MonitorCapture.cs" />
+    <Compile Include="Leds.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ColorSpace.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Solid.Arduino\Solid.Arduino.csproj">

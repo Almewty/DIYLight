@@ -95,9 +95,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Lights\Lights.csproj">
+    <ProjectReference Include="..\Lights\AmbiLED.csproj">
       <Project>{64f8de19-5f35-4285-b22b-312431ff4afa}</Project>
-      <Name>Lights</Name>
+      <Name>AmbiLED</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

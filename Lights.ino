@@ -63,6 +63,4 @@ void loop()
 {
   while (Firmata.available())
     Firmata.processInput();
-
-  //delay(10);
 }
