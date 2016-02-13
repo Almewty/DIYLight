@@ -1,12 +1,12 @@
-﻿using System;
-
-namespace Solid.Arduino.Firmata
+﻿namespace Solid.Arduino.Firmata
 {
     /// <summary>
     /// Represents the analog level read from or set to an analog pin.
     /// </summary>
     public struct AnalogState
     {
+        #region Public Properties
+
         /// <summary>
         /// Gets the MIDI channel number (0 - 15).
         /// </summary>
@@ -19,5 +19,7 @@ namespace Solid.Arduino.Firmata
         /// Gets the analog level.
         /// </summary>
         public long Level { get; internal set; }
+
+        #endregion Public Properties
     }
 }

@@ -14,16 +14,28 @@ namespace Solid.Arduino.Firmata
     public class FirmataEventArgs<T> : EventArgs
         where T : struct
     {
+        #region Private Fields
+
         private readonly T _value;
+
+        #endregion Private Fields
+
+        #region Public Properties
+
+        /// <summary>
+        /// Gets the received message.
+        /// </summary>
+        public T Value { get { return _value; } }
+
+        #endregion Public Properties
+
+        #region Internal Constructors
 
         internal FirmataEventArgs(T value)
         {
             _value = value;
         }
 
-        /// <summary>
-        /// Gets the received message.
-        /// </summary>
-        public T Value { get { return _value; } }
+        #endregion Internal Constructors
     }
 }

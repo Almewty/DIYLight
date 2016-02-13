@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Solid.Arduino.I2C
 {
@@ -11,17 +7,28 @@ namespace Solid.Arduino.I2C
     /// </summary>
     public class I2CEventArgs : EventArgs
     {
+        #region Private Fields
+
         private readonly I2CReply _value;
 
-        internal I2CEventArgs(I2CReply value)
-        {
-            _value = value;
-        }
+        #endregion Private Fields
+
+        #region Public Properties
 
         /// <summary>
         /// Gets the I2C message value being received.
         /// </summary>
         public I2CReply Value { get { return _value; } }
 
+        #endregion Public Properties
+
+        #region Internal Constructors
+
+        internal I2CEventArgs(I2CReply value)
+        {
+            _value = value;
+        }
+
+        #endregion Internal Constructors
     }
 }

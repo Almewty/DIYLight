@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Solid.Arduino.Firmata;
+using Solid.Arduino.Firmata.Servo;
+using Solid.Arduino.I2C;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,10 +10,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-
-using Solid.Arduino.Firmata;
-using Solid.Arduino.Firmata.Servo;
-using Solid.Arduino.I2C;
 
 namespace Solid.Arduino
 {
@@ -70,7 +69,8 @@ namespace Solid.Arduino
             ProtocolVersion = 0xF9
         }
 
-        private enum StringReadMode {
+        private enum StringReadMode
+        {
             ReadLine,
             ReadToTerminator,
             ReadBlock
@@ -109,7 +109,7 @@ namespace Solid.Arduino
             public StringReadMode Mode { get { return _mode; } }
         }
 
-        #endregion
+        #endregion Type declarations
 
         #region Fields
 
@@ -136,7 +136,7 @@ namespace Solid.Arduino
         private readonly int[] _messageBuffer = new int[Buffersize];
         private readonly char[] _stringBuffer = new char[Buffersize];
 
-        #endregion
+        #endregion Fields
 
         #region Constructors
 
@@ -175,7 +175,7 @@ namespace Solid.Arduino
             _messageTimeout = timeOut;
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Public Events, Methods & Properties
 
@@ -290,14 +290,16 @@ namespace Solid.Arduino
             return await Task.Run(() => GetStringFromQueue(StringRequest.CreateReadRequest(terminator)));
         }
 
-        #endregion
+        #endregion IStringProtocol
 
         #region IFirmataProtocol
 
         /// <inheritdoc cref="IFirmataProtocol.MessageReceived"/>
         public event MessageReceivedHandler MessageReceived;
+
         /// <inheritdoc cref="IFirmataProtocol.AnalogStateReceived"/>
         public event AnalogStateReceivedHandler AnalogStateReceived;
+
         /// <inheritdoc cref="IFirmataProtocol.DigitalStateReceived"/>
         public event DigitalStateReceivedHandler DigitalStateReceived;
 
@@ -334,7 +336,7 @@ namespace Solid.Arduino
         /// <inheritdoc cref="IFirmataProtocol.ResetBoard"/>
         public void ResetBoard()
         {
-            _connection.Write(new [] { (byte)0xFF }, 0, 1);
+            _connection.Write(new[] { (byte)0xFF }, 0, 1);
         }
 
         /// <inheritdoc cref="IFirmataProtocol.SetDigitalPin(int,long)"/>
@@ -556,7 +558,7 @@ namespace Solid.Arduino
         public BoardCapability GetBoardCapability()
         {
             RequestBoardCapability();
-            return (BoardCapability)((FirmataMessage) GetMessageFromQueue(new FirmataMessage(MessageType.CapabilityResponse))).Value;
+            return (BoardCapability)((FirmataMessage)GetMessageFromQueue(new FirmataMessage(MessageType.CapabilityResponse))).Value;
         }
 
         /// <inheritdoc cref="IFirmataProtocol.GetBoardCapabilityAsync"/>
@@ -622,7 +624,7 @@ namespace Solid.Arduino
             );
         }
 
-        #endregion
+        #endregion IFirmataProtocol
 
         #region IServoProtocol
 
@@ -655,7 +657,7 @@ namespace Solid.Arduino
             _connection.Write(command, 0, 8);
         }
 
-        #endregion
+        #endregion IServoProtocol
 
         #region II2cProtocol
 
@@ -674,7 +676,7 @@ namespace Solid.Arduino
             if (microseconds < 0 || microseconds > 0x3FFF)
                 throw new ArgumentOutOfRangeException("microseconds", Messages.ArgumentEx_I2cInterval);
 
-            var command = new []
+            var command = new[]
             {
                 SysExStart,
                 (byte)0x78,
@@ -791,7 +793,7 @@ namespace Solid.Arduino
             _connection.Write(command, 0, command.Length);
         }
 
-        #endregion
+        #endregion II2cProtocol
 
         #region IDisposable
 
@@ -804,9 +806,9 @@ namespace Solid.Arduino
             GC.SuppressFinalize(this);
         }
 
-        #endregion
+        #endregion IDisposable
 
-        #endregion
+        #endregion Public Events, Methods & Properties
 
         #region Private Methods
 
@@ -865,8 +867,8 @@ namespace Solid.Arduino
                     if (_receivedMessageList.Count > 0)
                     {
                         var message = (from firmataMessage in _receivedMessageList
-                            where firmataMessage.Type == awaitedMessage.Type
-                            select firmataMessage).FirstOrDefault();
+                                       where firmataMessage.Type == awaitedMessage.Type
+                                       select firmataMessage).FirstOrDefault();
                         if (message != null)
                         {
                             //if (_receivedMessageQueue.Count > 0
@@ -1236,7 +1238,7 @@ namespace Solid.Arduino
             {
                 data[x] = (byte)(_messageBuffer[x * 2 + 6] | _messageBuffer[x * 2 + 7] << 7);
             }
-            
+
             reply.Data = data;
 
             if (I2CReplyReceived != null)
@@ -1384,7 +1386,7 @@ namespace Solid.Arduino
 
             var builder = new StringBuilder(_messageBufferIndex);
 
-            for (int x = 4; x < _messageBufferIndex; x += 2 )
+            for (int x = 4; x < _messageBufferIndex; x += 2)
             {
                 builder.Append((char)(_messageBuffer[x] | (_messageBuffer[x + 1] << 7)));
             }
@@ -1393,7 +1395,6 @@ namespace Solid.Arduino
             return new FirmataMessage(firmware, MessageType.FirmwareResponse);
         }
 
-        #endregion
-
+        #endregion Private Methods
     }
 }

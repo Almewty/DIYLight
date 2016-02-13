@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Solid.Arduino
+﻿namespace Solid.Arduino
 {
     internal class ReceivedStringTracker : ObservableEventTracker<IStringProtocol, string>
     {
@@ -16,7 +10,7 @@ namespace Solid.Arduino
             TrackingSource.StringReceived += TrackingSource_StringReceived;
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Public Methods
 
@@ -29,15 +23,15 @@ namespace Solid.Arduino
             }
         }
 
-        #endregion
+        #endregion Public Methods
 
         #region Private Methods
 
-        void TrackingSource_StringReceived(object parSender, StringEventArgs parEventArgs)
+        private void TrackingSource_StringReceived(object parSender, StringEventArgs parEventArgs)
         {
             Observers.ForEach(o => o.OnNext(parEventArgs.Text));
         }
 
-        #endregion
+        #endregion Private Methods
     }
 }

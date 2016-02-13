@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 
 namespace Solid.Arduino.Firmata
 {
@@ -8,15 +7,21 @@ namespace Solid.Arduino.Firmata
     /// </summary>
     public struct DigitalPortState
     {
-        /// <summary>
-        /// Gets the digital port number.
-        /// </summary>
-        public int Port { get; internal set; }
+        #region Public Properties
 
         /// <summary>
         /// Gets the bit-pattern value of the digital port.
         /// </summary>
         public int Pins { get; internal set; }
+
+        /// <summary>
+        /// Gets the digital port number.
+        /// </summary>
+        public int Port { get; internal set; }
+
+        #endregion Public Properties
+
+        #region Public Methods
 
         /// <summary>
         /// Gets a value indicating if a pin is set (1 or 'high').
@@ -30,5 +35,7 @@ namespace Solid.Arduino.Firmata
 
             return (Pins & 1 << pin) > 0;
         }
+
+        #endregion Public Methods
     }
 }

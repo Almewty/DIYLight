@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Solid.Arduino
 {
@@ -12,6 +8,35 @@ namespace Solid.Arduino
     /// </summary>
     public static class StringExtensions
     {
+        #region Public Methods
+
+        /// <summary>
+        /// Converts a <see cref="String"/> to a 14 bit bigendian <see cref="byte"/> array.
+        /// </summary>
+        /// <param name="o">The string being converted</param>
+        /// <returns>A <see cref="byte"/> array.</returns>
+        /// <remarks>
+        /// Every character in the string is converted into two 7-bit bytes, starting with the most significant byte.
+        /// </remarks>
+        public static byte[] To14BitIso(this string o)
+        {
+            if (o == null)
+                throw new ArgumentNullException();
+
+            if (o.Length == 0)
+                return new byte[0];
+
+            byte[] dataBytes = new byte[o.Length * 2];
+
+            for (int x = 0; x < o.Length; x++)
+            {
+                short c = Convert.ToInt16(o[x]);
+                dataBytes[x * 2] = (byte)(c & 0x7F);
+                dataBytes[x * 2 + 1] = (byte)((c >> 7) & 0x7F);
+            }
+            return dataBytes;
+        }
+
         /// <summary>
         /// Converts the argument string into its binary-coded decimal (BCD) representation, e.g.
         ///  "1234" -> { 0x12, 0x34 } (for Big Endian byte order)
@@ -60,31 +85,6 @@ namespace Solid.Arduino
             return bytes;
         }
 
-        /// <summary>
-        /// Converts a <see cref="String"/> to a 14 bit bigendian <see cref="byte"/> array.
-        /// </summary>
-        /// <param name="o">The string being converted</param>
-        /// <returns>A <see cref="byte"/> array.</returns>
-        /// <remarks>
-        /// Every character in the string is converted into two 7-bit bytes, starting with the most significant byte.
-        /// </remarks>
-        public static byte[] To14BitIso(this string o)
-        {
-            if (o == null)
-                throw new ArgumentNullException();
-
-            if (o.Length == 0)
-                return new byte[0];
-
-            byte[] dataBytes = new byte[o.Length * 2];
-
-            for (int x = 0; x < o.Length; x++)
-            {
-                short c = Convert.ToInt16(o[x]);
-                dataBytes[x * 2] = (byte)(c & 0x7F);
-                dataBytes[x * 2 + 1] = (byte)((c >> 7) & 0x7F);
-            }
-            return dataBytes;
-        }
+        #endregion Public Methods
     }
 }

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Solid.Arduino.Firmata
+﻿namespace Solid.Arduino.Firmata
 {
     internal class DigitalStateTracker : ObservableEventTracker<IFirmataProtocol, DigitalPortState>
     {
@@ -12,7 +6,7 @@ namespace Solid.Arduino.Firmata
 
         private readonly int _port;
 
-        #endregion
+        #endregion Fields
 
         #region Constructors
 
@@ -23,7 +17,7 @@ namespace Solid.Arduino.Firmata
             TrackingSource.DigitalStateReceived += Firmata_DigitalStateReceived;
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Public Methods
 
@@ -36,11 +30,11 @@ namespace Solid.Arduino.Firmata
             }
         }
 
-        #endregion
+        #endregion Public Methods
 
         #region Private Methods
 
-        void Firmata_DigitalStateReceived(object parSender, FirmataEventArgs<DigitalPortState> parEventArgs)
+        private void Firmata_DigitalStateReceived(object parSender, FirmataEventArgs<DigitalPortState> parEventArgs)
         {
             if (_port >= 0 && _port != parEventArgs.Value.Port)
                 return;
@@ -48,6 +42,6 @@ namespace Solid.Arduino.Firmata
             Observers.ForEach(o => o.OnNext(parEventArgs.Value));
         }
 
-        #endregion
+        #endregion Private Methods
     }
 }

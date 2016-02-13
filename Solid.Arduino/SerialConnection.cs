@@ -1,10 +1,9 @@
-﻿using System;
+﻿using Solid.Arduino.Firmata;
+using System;
 using System.Diagnostics;
 using System.IO.Ports;
 using System.Linq;
 using System.Threading;
-
-using Solid.Arduino.Firmata;
 
 namespace Solid.Arduino
 {
@@ -35,7 +34,7 @@ namespace Solid.Arduino
 
         private bool _isDisposed;
 
-        #endregion
+        #endregion Fields
 
         #region Constructors
 
@@ -43,7 +42,7 @@ namespace Solid.Arduino
         /// Initializes a new instance of <see cref="SerialConnection"/> class using the highest COM-port available at 115,200 bits per second.
         /// </summary>
         public SerialConnection()
-            : base(GetHighestComPortName(), (int) SerialBaudRate.Bps_115200)
+            : base(GetHighestComPortName(), (int)SerialBaudRate.Bps_115200)
         {
             ReadTimeout = 100;
             WriteTimeout = 100;
@@ -55,17 +54,15 @@ namespace Solid.Arduino
         /// <param name="portName">The port name (e.g. 'COM3')</param>
         /// <param name="baudRate">The baud rate</param>
         public SerialConnection(string portName, SerialBaudRate baudRate)
-            : base(portName, (int) baudRate)
+            : base(portName, (int)baudRate)
         {
             ReadTimeout = 100;
             WriteTimeout = 100;
         }
 
-        #endregion
+        #endregion Constructors
 
-        #region Fields
 
-        #endregion
 
         #region Public Methods & Properties
 
@@ -214,7 +211,7 @@ namespace Solid.Arduino
             return connection ?? FindConnection(isAvailableFunc, portNames, OtherBaudRates);
         }
 
-        #endregion
+        #endregion Public Methods & Properties
 
         #region Private Methods
 
@@ -257,6 +254,6 @@ namespace Solid.Arduino
             return null;
         }
 
-        #endregion
+        #endregion Private Methods
     }
 }

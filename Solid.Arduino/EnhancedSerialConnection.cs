@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO.Ports;
+﻿using System.IO.Ports;
 using System.Linq;
 
 namespace Solid.Arduino
@@ -35,11 +34,9 @@ namespace Solid.Arduino
             WriteTimeout = 100;
         }
 
-        #endregion
+        #endregion Constructors
 
-        #region Fields
 
-        #endregion
 
         #region Public Methods & Properties
 
@@ -66,18 +63,18 @@ namespace Solid.Arduino
             }
         }
 
-        #endregion
+        #endregion Public Methods & Properties
 
         #region Private Methods
 
         private static string GetLastPortName()
         {
             return (from p in SerialPort.GetPortNames()
-                            where (p.StartsWith(@"/dev/ttyUSB") || p.StartsWith(@"/dev/ttyAMA") || p.StartsWith(@"/dev/ttyACM") || p.StartsWith("COM"))
-                            orderby p descending
-                            select p).First();
+                    where (p.StartsWith(@"/dev/ttyUSB") || p.StartsWith(@"/dev/ttyAMA") || p.StartsWith(@"/dev/ttyACM") || p.StartsWith("COM"))
+                    orderby p descending
+                    select p).First();
         }
 
-        #endregion
+        #endregion Private Methods
     }
 }

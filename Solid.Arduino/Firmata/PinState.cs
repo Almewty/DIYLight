@@ -1,21 +1,21 @@
-﻿using System;
-
-namespace Solid.Arduino.Firmata
+﻿namespace Solid.Arduino.Firmata
 {
     /// <summary>
     /// Contains information about a pin's state.
     /// </summary>
     public struct PinState
     {
-        /// <summary>
-        /// The 0-based pin number
-        /// </summary>
-        public int PinNumber { get; internal set; }
+        #region Public Properties
 
         /// <summary>
         /// Gets pin's operating mode.
         /// </summary>
         public PinMode Mode { get; internal set; }
+
+        /// <summary>
+        /// The 0-based pin number
+        /// </summary>
+        public int PinNumber { get; internal set; }
 
         /// <summary>
         /// Gets the value of the pin.
@@ -24,5 +24,7 @@ namespace Solid.Arduino.Firmata
         /// For analog pins the value is 0 or a positive number. For digital pins a low is represented by 0 and a high is respresented by 1.
         /// </remarks>
         public long Value { get; internal set; }
+
+        #endregion Public Properties
     }
 }

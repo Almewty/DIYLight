@@ -1,12 +1,12 @@
-﻿using System;
-
-namespace Solid.Arduino.Firmata
+﻿namespace Solid.Arduino.Firmata
 {
     /// <summary>
     /// Represents a mapping between a MIDI channel and a physical pin number.
     /// </summary>
     public struct AnalogPinMapping
     {
+        #region Public Properties
+
         /// <summary>
         /// Gets the MIDI channel number (0 - 15).
         /// </summary>
@@ -16,5 +16,7 @@ namespace Solid.Arduino.Firmata
         /// Gets the board's pin number (0 - 127).
         /// </summary>
         public int PinNumber { get; internal set; }
+
+        #endregion Public Properties
     }
 }

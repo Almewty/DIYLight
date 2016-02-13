@@ -1,32 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Solid.Arduino.Firmata
 {
-    /// <summary>
-    /// Signature of event handlers capable of processing Firmata messages.
-    /// </summary>
-    /// <param name="sender">The object raising the event</param>
-    /// <param name="eventArgs">Event arguments holding a <see cref="FirmataMessage"/></param>
-    public delegate void MessageReceivedHandler(object sender, FirmataMessageEventArgs eventArgs);
-
-    /// <summary>
-    /// Signature of event handlers capable of processing analog I/O messages.
-    /// </summary>
-    /// <param name="sender">The object raising the event</param>
-    /// <param name="eventArgs">Event arguments holding a <see cref="AnalogState"/></param>
-    public delegate void AnalogStateReceivedHandler(object sender, FirmataEventArgs<AnalogState> eventArgs);
-
-    /// <summary>
-    /// Signature of event handlers capable of processing digital I/O messages.
-    /// </summary>
-    /// <param name="sender">The object raising the event</param>
-    /// <param name="eventArgs">Event arguments holding a <see cref="DigitalPortState"/></param>
-    public delegate void DigitalStateReceivedHandler(object sender, FirmataEventArgs<DigitalPortState> eventArgs);
-
     /// <summary>
     /// The modes a pin can be in or can be set to.
     /// </summary>
@@ -45,6 +21,27 @@ namespace Solid.Arduino.Firmata
     }
 
     /// <summary>
+    /// Signature of event handlers capable of processing analog I/O messages.
+    /// </summary>
+    /// <param name="sender">The object raising the event</param>
+    /// <param name="eventArgs">Event arguments holding a <see cref="AnalogState"/></param>
+    public delegate void AnalogStateReceivedHandler(object sender, FirmataEventArgs<AnalogState> eventArgs);
+
+    /// <summary>
+    /// Signature of event handlers capable of processing digital I/O messages.
+    /// </summary>
+    /// <param name="sender">The object raising the event</param>
+    /// <param name="eventArgs">Event arguments holding a <see cref="DigitalPortState"/></param>
+    public delegate void DigitalStateReceivedHandler(object sender, FirmataEventArgs<DigitalPortState> eventArgs);
+
+    /// <summary>
+    /// Signature of event handlers capable of processing Firmata messages.
+    /// </summary>
+    /// <param name="sender">The object raising the event</param>
+    /// <param name="eventArgs">Event arguments holding a <see cref="FirmataMessage"/></param>
+    public delegate void MessageReceivedHandler(object sender, FirmataMessageEventArgs eventArgs);
+
+    /// <summary>
     /// Defines a comprehensive set of members supporting the Firmata Protocol.
     /// Currently version 2.3 is supported.
     /// </summary>
@@ -53,17 +50,7 @@ namespace Solid.Arduino.Firmata
     /// <seealso href="http://arduino.cc/en/reference/firmata">Firmata reference for Arduino</seealso>
     public interface IFirmataProtocol
     {
-        /// <summary>
-        /// Event, raised for every SysEx (0xF0) and ProtocolVersion (0xF9) message not handled by an <see cref="IFirmataProtocol"/>'s Get method.
-        /// </summary>
-        /// <remarks>
-        /// When e.g. method <see cref="RequestBoardCapability"/> is invoked, the party system's response message raises this event.
-        /// However, when method <see cref="GetBoardCapability"/> or <see cref="GetBoardCapabilityAsync"/> is invoked, the response is returned
-        /// to the respective method and event <see cref="MessageReceived"/> is not raised.
-        /// 
-        /// This event is not raised for either analog or digital I/O messages.
-        /// </remarks>
-        event MessageReceivedHandler MessageReceived;
+        #region Public Events
 
         /// <summary>
         /// Event, raised when an analog state message (command 0xE0) is received.
@@ -86,6 +73,22 @@ namespace Solid.Arduino.Firmata
         /// </para>
         /// </remarks>
         event DigitalStateReceivedHandler DigitalStateReceived;
+
+        /// <summary>
+        /// Event, raised for every SysEx (0xF0) and ProtocolVersion (0xF9) message not handled by an <see cref="IFirmataProtocol"/>'s Get method.
+        /// </summary>
+        /// <remarks>
+        /// When e.g. method <see cref="RequestBoardCapability"/> is invoked, the party system's response message raises this event.
+        /// However, when method <see cref="GetBoardCapability"/> or <see cref="GetBoardCapabilityAsync"/> is invoked, the response is returned
+        /// to the respective method and event <see cref="MessageReceived"/> is not raised.
+        ///
+        /// This event is not raised for either analog or digital I/O messages.
+        /// </remarks>
+        event MessageReceivedHandler MessageReceived;
+
+        #endregion Public Events
+
+        #region Public Methods
 
         /// <summary>
         /// Creates an observable object tracking <see cref="AnalogState"/> messages.
@@ -118,6 +121,124 @@ namespace Solid.Arduino.Firmata
         IObservable<DigitalPortState> CreateDigitalStateMonitor(int port);
 
         /// <summary>
+        /// Gets the channel-to-pin mappings of the party system's analog lines.
+        /// </summary>
+        /// <returns>The channel-to-pin mappings</returns>
+        BoardAnalogMapping GetBoardAnalogMapping();
+
+        /// <summary>
+        /// Asynchronously gets the channel-to-pin mappings of the party system's analog lines.
+        /// </summary>
+        /// <returns>The channel-to-pin mappings</returns>
+        Task<BoardAnalogMapping> GetBoardAnalogMappingAsync();
+
+        /// <summary>
+        /// Gets a summary of the party system's capabilities.
+        /// </summary>
+        /// <returns>The system's capabilities</returns>
+        BoardCapability GetBoardCapability();
+
+        /// <summary>
+        /// Asynchronously gets a summary of the party system's capabilities.
+        /// </summary>
+        /// <returns>The system's capabilities</returns>
+        Task<BoardCapability> GetBoardCapabilityAsync();
+
+        /// <summary>
+        /// Gets the firmware signature of the party system.
+        /// </summary>
+        /// <returns>The firmware signature</returns>
+        Firmware GetFirmware();
+
+        /// <summary>
+        /// Asynchronously gets the firmware signature of the party system.
+        /// </summary>
+        /// <returns>The firmware signature</returns>
+        Task<Firmware> GetFirmwareAsync();
+
+        /// <summary>
+        /// Gets a pin's mode (digital input/output, analog etc.) and actual value.
+        /// </summary>
+        /// <param name="pinNumber">The pin number</param>
+        /// <returns>The pin's state</returns>
+        PinState GetPinState(int pinNumber);
+
+        /// <summary>
+        /// Asynchronously gets a pin's mode (digital input/output, analog etc.) and actual value.
+        /// </summary>
+        /// <param name="pinNumber">The pin number</param>
+        /// <returns>The pin's state</returns>
+        Task<PinState> GetPinStateAsync(int pinNumber);
+
+        /// <summary>
+        /// Gets the protocol version implemented on the party system.
+        /// </summary>
+        /// <returns>The implemented protocol version</returns>
+        ProtocolVersion GetProtocolVersion();
+
+        /// <summary>
+        /// Asynchronously gets the protocol version implemented on the party system.
+        /// </summary>
+        /// <returns>The implemented protocol version</returns>
+        Task<ProtocolVersion> GetProtocolVersionAsync();
+
+        /// <summary>
+        /// Requests the party system to send the channel-to-pin mappings of its analog lines.
+        /// </summary>
+        /// <remarks>
+        /// The party system is expected to return a single SYSEX ANALOG_MAPPING_RESPONSE message.
+        /// This message triggers the <see cref="MessageReceived"/> event. The analog mappings are
+        /// passed in the <see cref="FirmataMessageEventArgs"/> in a <see cref="BoardAnalogMapping"/> object.
+        /// </remarks>
+        void RequestBoardAnalogMapping();
+
+        /// <summary>
+        /// Requests the party system to send a summary of its capabilities.
+        /// </summary>
+        /// <remarks>
+        /// The party system is expected to return a single SYSEX CAPABILITY_RESPONSE message.
+        /// This message triggers the <see cref="MessageReceived"/> event. The capabilities
+        /// are passed in the <see cref="FirmataMessageEventArgs"/> in a <see cref="BoardCapability"/> object.
+        /// </remarks>
+        void RequestBoardCapability();
+
+        /// <summary>
+        /// Requests the party system to send a firmware message.
+        /// </summary>
+        /// <remarks>
+        /// The party system is expected to return a single SYSEX REPORT_FIRMWARE message.
+        /// This message triggers the <see cref="MessageReceived"/> event. The firmware signature
+        /// is passed in the <see cref="FirmataMessageEventArgs"/> in a <see cref="Firmware"/> object.
+        /// </remarks>
+        void RequestFirmware();
+
+        /// <summary>
+        /// Requests the party system to send the state of a given pin.
+        /// </summary>
+        /// <param name="pinNumber">The pin number</param>
+        /// <remarks>
+        /// The party system is expected to return a single SYSEX PINSTATE_RESPONSE message.
+        /// This message triggers the <see cref="MessageReceived"/> event. The pin state
+        /// is passed in the <see cref="FirmataMessageEventArgs"/> in a <see cref="PinState"/> object.
+        /// </remarks>
+        void RequestPinState(int pinNumber);
+
+        /// <summary>
+        /// Requests the party system to send a protocol version message.
+        /// </summary>
+        /// <remarks>
+        /// The party system is expected to return a single protocol version message (0xF9).
+        /// This message triggers the <see cref="MessageReceived"/> event. The protocol version
+        /// is passed in the <see cref="FirmataMessageEventArgs"/> in a <see cref="ProtocolVersion"/> object.
+        /// </remarks>
+        void RequestProtocolVersion();
+
+        /// <summary>
+        /// Sends a reset message to the party system.
+        /// </summary>
+        void ResetBoard();
+
+        /// <summary>
         /// Sends a message string.
         /// </summary>
         /// <param name="data">The message string</param>
@@ -136,6 +257,27 @@ namespace Solid.Arduino.Firmata
         void SetAnalogReportMode(int channel, bool enable);
 
         /// <summary>
+        /// Sets an analog value on a PWM or Servo enabled analog output pin.
+        /// </summary>
+        /// <param name="pinNumber">The pin number.</param>
+        /// <param name="value">The value</param>
+        void SetDigitalPin(int pinNumber, long value);
+
+        /// <summary>
+        /// Sets a HI or LO value on a digital output pin.
+        /// </summary>
+        /// <param name="pinNumber">The pin number</param>
+        /// <param name="value">The value (<c>false</c> = Low, <c>true</c> = High)</param>
+        void SetDigitalPin(int pinNumber, bool value);
+
+        /// <summary>
+        /// Sets a pin's mode (digital input/digital output/analog/PWM/servo etc.).
+        /// </summary>
+        /// <param name="pinNumber">The number of the pin</param>
+        /// <param name="mode">The pin's mode</param>
+        void SetDigitalPinMode(int pinNumber, PinMode mode);
+
+        /// <summary>
         /// Sets the digital output pins of a given port LOW or HIGH.
         /// </summary>
         /// <param name="portNumber">The 0-based port number</param>
@@ -150,7 +292,7 @@ namespace Solid.Arduino.Firmata
         /// <example>
         /// For port 0 bit 2 maps to the Arduino Uno's pin 2.
         /// For port 1 bit 2 maps to pin 10.
-        /// 
+        ///
         /// The complete mapping of port 1 of the Arduino Uno looks like this:
         /// <list type="">
         /// <item>bit 0: pin 8</item>
@@ -161,7 +303,7 @@ namespace Solid.Arduino.Firmata
         /// <item>bit 5: pin 13</item>
         /// <item>bit 6: not mapped</item>
         /// <item>bit 7: not mapped</item>
-        /// </list> 
+        /// </list>
         /// </example>
         /// </remarks>
         void SetDigitalPort(int portNumber, int pins);
@@ -182,148 +324,11 @@ namespace Solid.Arduino.Firmata
         void SetDigitalReportMode(int portNumber, bool enable);
 
         /// <summary>
-        /// Sets a pin's mode (digital input/digital output/analog/PWM/servo etc.).
-        /// </summary>
-        /// <param name="pinNumber">The number of the pin</param>
-        /// <param name="mode">The pin's mode</param>
-        void SetDigitalPinMode(int pinNumber, PinMode mode);
-
-        /// <summary>
         /// Sets the frequency at which analog samples must be reported.
         /// </summary>
         /// <param name="milliseconds">The sampling interval in milliseconds</param>
         void SetSamplingInterval(int milliseconds);
 
-        /// <summary>
-        /// Sets an analog value on a PWM or Servo enabled analog output pin.
-        /// </summary>
-        /// <param name="pinNumber">The pin number.</param>
-        /// <param name="value">The value</param>
-        void SetDigitalPin(int pinNumber, long value);
-
-        /// <summary>
-        /// Sets a HI or LO value on a digital output pin.
-        /// </summary>
-        /// <param name="pinNumber">The pin number</param>
-        /// <param name="value">The value (<c>false</c> = Low, <c>true</c> = High)</param>
-        void SetDigitalPin(int pinNumber, bool value);
-
-        /// <summary>
-        /// Sends a reset message to the party system.
-        /// </summary>
-        void ResetBoard();
-
-        /// <summary>
-        /// Requests the party system to send a protocol version message.
-        /// </summary>
-        /// <remarks>
-        /// The party system is expected to return a single protocol version message (0xF9).
-        /// This message triggers the <see cref="MessageReceived"/> event. The protocol version
-        /// is passed in the <see cref="FirmataMessageEventArgs"/> in a <see cref="ProtocolVersion"/> object.
-        /// </remarks>
-        void RequestProtocolVersion();
-
-        /// <summary>
-        /// Gets the protocol version implemented on the party system.
-        /// </summary>
-        /// <returns>The implemented protocol version</returns>
-        ProtocolVersion GetProtocolVersion();
-
-        /// <summary>
-        /// Asynchronously gets the protocol version implemented on the party system.
-        /// </summary>
-        /// <returns>The implemented protocol version</returns>
-        Task<ProtocolVersion> GetProtocolVersionAsync();
-
-        /// <summary>
-        /// Requests the party system to send a firmware message.
-        /// </summary>
-        /// <remarks>
-        /// The party system is expected to return a single SYSEX REPORT_FIRMWARE message.
-        /// This message triggers the <see cref="MessageReceived"/> event. The firmware signature
-        /// is passed in the <see cref="FirmataMessageEventArgs"/> in a <see cref="Firmware"/> object.
-        /// </remarks>
-        void RequestFirmware();
-
-        /// <summary>
-        /// Gets the firmware signature of the party system.
-        /// </summary>
-        /// <returns>The firmware signature</returns>
-        Firmware GetFirmware();
-
-        /// <summary>
-        /// Asynchronously gets the firmware signature of the party system.
-        /// </summary>
-        /// <returns>The firmware signature</returns>
-        Task<Firmware> GetFirmwareAsync();
-
-        /// <summary>
-        /// Requests the party system to send a summary of its capabilities.
-        /// </summary>
-        /// <remarks>
-        /// The party system is expected to return a single SYSEX CAPABILITY_RESPONSE message.
-        /// This message triggers the <see cref="MessageReceived"/> event. The capabilities
-        /// are passed in the <see cref="FirmataMessageEventArgs"/> in a <see cref="BoardCapability"/> object.
-        /// </remarks>
-        void RequestBoardCapability();
-
-        /// <summary>
-        /// Gets a summary of the party system's capabilities.
-        /// </summary>
-        /// <returns>The system's capabilities</returns>
-        BoardCapability GetBoardCapability();
-
-        /// <summary>
-        /// Asynchronously gets a summary of the party system's capabilities.
-        /// </summary>
-        /// <returns>The system's capabilities</returns>
-        Task<BoardCapability> GetBoardCapabilityAsync();
-
-        /// <summary>
-        /// Requests the party system to send the channel-to-pin mappings of its analog lines.
-        /// </summary>
-        /// <remarks>
-        /// The party system is expected to return a single SYSEX ANALOG_MAPPING_RESPONSE message.
-        /// This message triggers the <see cref="MessageReceived"/> event. The analog mappings are
-        /// passed in the <see cref="FirmataMessageEventArgs"/> in a <see cref="BoardAnalogMapping"/> object.
-        /// </remarks>
-        void RequestBoardAnalogMapping();
-
-        /// <summary>
-        /// Gets the channel-to-pin mappings of the party system's analog lines.
-        /// </summary>
-        /// <returns>The channel-to-pin mappings</returns>
-        BoardAnalogMapping GetBoardAnalogMapping();
-
-        /// <summary>
-        /// Asynchronously gets the channel-to-pin mappings of the party system's analog lines.
-        /// </summary>
-        /// <returns>The channel-to-pin mappings</returns>
-        Task<BoardAnalogMapping> GetBoardAnalogMappingAsync();
-
-        /// <summary>
-        /// Requests the party system to send the state of a given pin.
-        /// </summary>
-        /// <param name="pinNumber">The pin number</param>
-        /// <remarks>
-        /// The party system is expected to return a single SYSEX PINSTATE_RESPONSE message.
-        /// This message triggers the <see cref="MessageReceived"/> event. The pin state
-        /// is passed in the <see cref="FirmataMessageEventArgs"/> in a <see cref="PinState"/> object.
-        /// </remarks>
-        void RequestPinState(int pinNumber);
-
-        /// <summary>
-        /// Gets a pin's mode (digital input/output, analog etc.) and actual value.
-        /// </summary>
-        /// <param name="pinNumber">The pin number</param>
-        /// <returns>The pin's state</returns>
-        PinState GetPinState(int pinNumber);
-
-        /// <summary>
-        /// Asynchronously gets a pin's mode (digital input/output, analog etc.) and actual value.
-        /// </summary>
-        /// <param name="pinNumber">The pin number</param>
-        /// <returns>The pin's state</returns>
-        Task<PinState> GetPinStateAsync(int pinNumber);
+        #endregion Public Methods
     }
 }

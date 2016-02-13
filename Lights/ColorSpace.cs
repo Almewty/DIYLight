@@ -9,13 +9,18 @@ namespace RustyDevelopment.AmbiLED
     public static class ColorSpace
     {
         #region Felder
+
         /// <summary>
         /// Referenzweiß D65.
         /// </summary>
         private static readonly double[] Xn = { 0.950456, 1, 1.088754 };
-        #endregion
+
+        #endregion Felder
+
         //---------------------------------------------------------------------
+
         #region RGB-Konvertierungen
+
         /// <summary>
         /// Konvertiert eine sRGB-Farbe zu einer HSV-Farbe.
         /// </summary>
@@ -57,6 +62,7 @@ namespace RustyDevelopment.AmbiLED
 
             return new double[] { h, s, max };
         }
+
         //---------------------------------------------------------------------
         /// <summary>
         /// Konvertiert eine sRGB-Farbe zu einer CIE-Lab-Farbe.
@@ -136,9 +142,13 @@ namespace RustyDevelopment.AmbiLED
 
             return lab;
         }
-        #endregion
+
+        #endregion RGB-Konvertierungen
+
         //---------------------------------------------------------------------
+
         #region HSV-Konvertierungen
+
         /// <summary>
         /// Konvertiert die HSV-Farbe zu einer sRGB-Farbe.
         /// </summary>
@@ -205,18 +215,23 @@ namespace RustyDevelopment.AmbiLED
                     case 0:
                         rgb = new double[] { hsv[2], t, p };
                         break;
+
                     case 1:
                         rgb = new double[] { q, hsv[2], p };
                         break;
+
                     case 2:
                         rgb = new double[] { p, hsv[2], t };
                         break;
+
                     case 3:
                         rgb = new double[] { p, q, hsv[2] };
                         break;
+
                     case 4:
                         rgb = new double[] { t, p, hsv[2] };
                         break;
+
                     case 5:
                     default:
                         rgb = new double[] { hsv[2], p, q };
@@ -233,9 +248,13 @@ namespace RustyDevelopment.AmbiLED
                 (int)rgb[1],
                 (int)rgb[2]);
         }
-        #endregion
+
+        #endregion HSV-Konvertierungen
+
         //---------------------------------------------------------------------
+
         #region CIE-Lab-Konvertierungen
+
         /// <summary>
         /// Konvertiert eine CIE-Lab-Farbe zu einer sRGB-Farbe.
         /// </summary>
@@ -329,9 +348,26 @@ namespace RustyDevelopment.AmbiLED
                 (int)rgb[1],
                 (int)rgb[2]);
         }
-        #endregion
+
+        #endregion CIE-Lab-Konvertierungen
+
         //---------------------------------------------------------------------
+
         #region Farbabstände
+
+        //---------------------------------------------------------------------
+        /// <summary>
+        /// Berechnet den perzeptuellen Abstand zwischen den beiden Farben im
+        /// CIE-L*a*b* Farbraum gemäß euklidischer Norm.
+        /// </summary>
+        /// <param name="lab1">Die Referenzfarbe.</param>
+        /// <param name="lab2">Die Vergleichsfarbe.</param>
+        /// <returns>Den perzeptuellen Abstand der Farben.</returns>
+        public static double ColorDistance(double[] lab1, double[] lab2)
+        {
+            return Math.Sqrt(ColorDistance2(lab1, lab2));
+        }
+
         /// <summary>
         /// Berechnet den quadratischen perzeptuellen Abstand zwischen den
         /// beiden Farben im CIE-L*a*b* Farbraum gemäß euklidischer Norm.
@@ -348,18 +384,7 @@ namespace RustyDevelopment.AmbiLED
 
             return dist2;
         }
-        //---------------------------------------------------------------------
-        /// <summary>
-        /// Berechnet den perzeptuellen Abstand zwischen den beiden Farben im
-        /// CIE-L*a*b* Farbraum gemäß euklidischer Norm.
-        /// </summary>
-        /// <param name="lab1">Die Referenzfarbe.</param>
-        /// <param name="lab2">Die Vergleichsfarbe.</param>
-        /// <returns>Den perzeptuellen Abstand der Farben.</returns>
-        public static double ColorDistance(double[] lab1, double[] lab2)
-        {
-            return Math.Sqrt(ColorDistance2(lab1, lab2));
-        }
-        #endregion
+
+        #endregion Farbabstände
     }
 }

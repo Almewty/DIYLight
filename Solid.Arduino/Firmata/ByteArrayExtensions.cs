@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Solid.Arduino.Firmata
 {
@@ -11,6 +7,8 @@ namespace Solid.Arduino.Firmata
     /// </summary>
     public static class ByteArrayExtensions
     {
+        #region Public Methods
+
         /// <summary>
         /// Converts a <see cref="byte"/> array holding binary coded digits to a readable string.
         /// </summary>
@@ -49,6 +47,10 @@ namespace Solid.Arduino.Firmata
             return new string(chars);
         }
 
+        #endregion Public Methods
+
+        #region Private Methods
+
         private static char ConvertToChar(int code)
         {
             if (code > 9)
@@ -56,5 +58,7 @@ namespace Solid.Arduino.Firmata
 
             return Convert.ToChar(code | 0x30);
         }
+
+        #endregion Private Methods
     }
 }

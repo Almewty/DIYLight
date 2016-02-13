@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Solid.Arduino
 {
@@ -14,7 +11,7 @@ namespace Solid.Arduino
         protected readonly List<IObserver<TTracked>> Observers = new List<IObserver<TTracked>>();
         protected bool IsDisposed = false;
 
-        #endregion
+        #endregion Protected Fields
 
         #region Constructors
 
@@ -23,7 +20,7 @@ namespace Solid.Arduino
             TrackingSource = trackingSource;
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Public Methods
 
@@ -45,7 +42,6 @@ namespace Solid.Arduino
             }
         }
 
-        #endregion
-
+        #endregion Public Methods
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace RustyDevelopment.AmbiLED
 {
@@ -8,41 +8,33 @@ namespace RustyDevelopment.AmbiLED
     {
         #region Private Fields
 
-        private SharpDX.DXGI.Adapter1 _adapter;
+        private readonly SharpDX.DXGI.Adapter1 _adapter;
+        private readonly SharpDX.DXGI.Output1 _output1;
         private SharpDX.Direct3D11.Device _device;
         private SharpDX.DXGI.OutputDuplication _duplicatedOutput;
-        private SharpDX.DXGI.Factory1 _factory;
         private bool _gotFirstFrame;
         private int _height;
-        private SharpDX.DXGI.Output _output;
-        private SharpDX.DXGI.Output1 _output1;
         private SharpDX.Direct3D11.Texture2D _screenTexture;
         private SharpDX.Direct3D11.Texture2DDescription _textureDesc;
+        private CancellationTokenSource _tokenSource;
         private int _width;
 
         #endregion Private Fields
 
-        #region Public Properties
 
-        public int Adapter { get; }
-        public Dictionary<byte, Rectangle> Filter { get; }
-        public int OutputDevice { get; }
-
-        #endregion Public Properties
 
         #region Public Events
 
-        public event Action<byte, byte, byte, byte> ProcessColor;
+        public event EventHandler<PixelCollection> GotFrame;
 
         #endregion Public Events
 
         #region Public Constructors
 
-        public MonitorCapture(int adapter, int outputDev)
+        public MonitorCapture(SharpDX.DXGI.Adapter1 adapter, SharpDX.DXGI.Output1 output)
         {
-            Adapter = adapter;
-            OutputDevice = outputDev;
-            Filter = new Dictionary<byte, Rectangle>();
+            _adapter = adapter;
+            _output1 = output;
 
             Init();
         }
@@ -51,7 +43,19 @@ namespace RustyDevelopment.AmbiLED
 
         #region Public Methods
 
-        public unsafe void Capture()
+        public void StartCapturing()
+        {
+            _tokenSource = new CancellationTokenSource();
+            Task.Factory.StartNew(() => CaptureLoop(_tokenSource.Token), _tokenSource.Token,
+                TaskCreationOptions.LongRunning, TaskScheduler.Default);
+        }
+
+        public void StopCapturing()
+        {
+            _tokenSource.Cancel();
+        }
+
+        private void Capture()
         {
             try
             {
@@ -70,37 +74,8 @@ namespace RustyDevelopment.AmbiLED
                     // Get the desktop capture texture
                     var mapSource = _device.ImmediateContext.MapSubresource(_screenTexture, 0, SharpDX.Direct3D11.MapMode.Read, SharpDX.Direct3D11.MapFlags.None);
 
-                    // Copy pixels from screen capture Texture to GDI bitmap
-                    var sourcePtr = (byte*)mapSource.DataPointer.ToPointer();
-
-                    foreach (var kvp in Filter)
-                    {
-                        long red = 0;
-                        long green = 0;
-                        long blue = 0;
-
-                        var rect = kvp.Value;
-                        byte index = kvp.Key;
-                        for (int y = rect.Top; y < rect.Bottom; y++)
-                        {
-                            int offset = mapSource.RowPitch * y + rect.Left * 4;
-                            for (int x = rect.Left; x < rect.Right; x++)
-                            {
-                                blue += sourcePtr[offset + 0];
-                                green += sourcePtr[offset + 1];
-                                red += sourcePtr[offset + 2];
-                                offset += 4;
-                            }
-                        }
-
-                        int size = rect.Width * rect.Height;
-
-                        red /= size;
-                        green /= size;
-                        blue /= size;
-
-                        ProcessColor?.Invoke(index, (byte)red, (byte)green, (byte)blue);
-                    }
+                    // Send captured frame
+                    GotFrame?.Invoke(this, new PixelCollection(mapSource.DataPointer, _height, _width));
 
                     // Release source and dest locks
                     _device.ImmediateContext.UnmapSubresource(_screenTexture, 0);
@@ -119,6 +94,14 @@ namespace RustyDevelopment.AmbiLED
             }
         }
 
+        private void CaptureLoop(CancellationToken cancellationToken)
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                Capture();
+            }
+        }
+
         #endregion Public Methods
 
         #region Private Methods
@@ -126,20 +109,13 @@ namespace RustyDevelopment.AmbiLED
         private void Init()
         {
             _screenTexture?.Dispose();
-            _output1?.Dispose();
-            _output?.Dispose();
-            _factory?.Dispose();
             _duplicatedOutput?.Dispose();
             _device?.Dispose();
             _adapter?.Dispose();
 
-            _factory = new SharpDX.DXGI.Factory1();
-            _adapter = _factory.GetAdapter1(Adapter);
             _device = new SharpDX.Direct3D11.Device(_adapter);
-            _output = _adapter.GetOutput(OutputDevice);
-            _output1 = _output.QueryInterface<SharpDX.DXGI.Output1>();
-            _width = _output.Description.DesktopBounds.Right - _output.Description.DesktopBounds.Left;
-            _height = _output.Description.DesktopBounds.Bottom - _output.Description.DesktopBounds.Top;
+            _width = _output1.Description.DesktopBounds.Right - _output1.Description.DesktopBounds.Left;
+            _height = _output1.Description.DesktopBounds.Bottom - _output1.Description.DesktopBounds.Top;
             _textureDesc = new SharpDX.Direct3D11.Texture2DDescription
             {
                 CpuAccessFlags = SharpDX.Direct3D11.CpuAccessFlags.Read,

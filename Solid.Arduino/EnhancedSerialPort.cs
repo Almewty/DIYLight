@@ -18,11 +18,11 @@
 //
 
 using System;
-using System.IO.Ports;
 using System.ComponentModel;
 using System.IO;
-using System.Runtime.InteropServices;
+using System.IO.Ports;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace Solid.Arduino
@@ -39,7 +39,6 @@ namespace Solid.Arduino
     /// <inheritdoc cref="SerialPort" />
     public class EnhancedSerialPort : SerialPort
     {
-
         [DllImport("MonoPosixHelper", SetLastError = true)]
         private static extern bool poll_serial(int fd, out int error, int timeout);
 
@@ -50,10 +49,11 @@ namespace Solid.Arduino
 
         // Private member access through reflection.
         private int _fdStreamField;
+
         private FieldInfo _disposedFieldInfo;
         private object _dataReceived;
 
-        #endregion
+        #endregion Private Fields
 
         #region Constructors
 
@@ -98,7 +98,7 @@ namespace Solid.Arduino
         {
         }
 
-        #endregion
+        #endregion Constructors
 
         #region Public Methods
 
@@ -113,10 +113,10 @@ namespace Solid.Arduino
 
             if (fieldInfo != null)
             {
-                _fdStreamField = (int) fieldInfo.GetValue(BaseStream);
+                _fdStreamField = (int)fieldInfo.GetValue(BaseStream);
                 _disposedFieldInfo = BaseStream.GetType()
                     .GetField("disposed", BindingFlags.Instance | BindingFlags.NonPublic);
-                fieldInfo = typeof (SerialPort).GetField("data_received", BindingFlags.Instance | BindingFlags.NonPublic);
+                fieldInfo = typeof(SerialPort).GetField("data_received", BindingFlags.Instance | BindingFlags.NonPublic);
 
                 if (fieldInfo != null)
                     _dataReceived = fieldInfo.GetValue(this);
@@ -125,7 +125,7 @@ namespace Solid.Arduino
             new Thread(EventThreadFunction).Start();
         }
 
-        #endregion
+        #endregion Public Methods
 
         #region Private Methods
 
@@ -204,6 +204,6 @@ namespace Solid.Arduino
             }
         }
 
-        #endregion
+        #endregion Private Methods
     }
 }

@@ -7,18 +7,17 @@ namespace Solid.Arduino
     /// Defines a serial port connection.
     /// </summary>
     /// <seealso href="http://arduino.cc/en/Reference/Serial">Serial reference for Arduino</seealso>
-    public interface ISerialConnection: IDisposable
+    public interface ISerialConnection : IDisposable
     {
-        /// <summary>
-        ///  Represents the method that will handle the data received event of a <see cref="ISerialConnection"/> object.
-        /// </summary>
-        event SerialDataReceivedEventHandler DataReceived;
+        #region Public Properties
 
         /// <inheritdoc cref="SerialPort.BaudRate"/>
         int BaudRate { get; set; }
 
-        /// <inheritdoc cref="SerialPort.PortName"/>
-        string PortName { get; set; }
+        /// <summary>
+        /// Gets the number of bytes of data in the receive buffer.
+        /// </summary>
+        int BytesToRead { get; }
 
         /// <summary>
         /// Gets a value indicating the open or closed status of the <see cref="ISerialConnection"/> object.
@@ -34,20 +33,31 @@ namespace Solid.Arduino
         /// </remarks>
         string NewLine { get; set; }
 
-        /// <summary>
-        /// Gets the number of bytes of data in the receive buffer.
-        /// </summary>
-        int BytesToRead { get; }
+        /// <inheritdoc cref="SerialPort.PortName"/>
+        string PortName { get; set; }
+
+        #endregion Public Properties
+
+        #region Public Events
 
         /// <summary>
-        /// Opens the connection.
+        ///  Represents the method that will handle the data received event of a <see cref="ISerialConnection"/> object.
         /// </summary>
-        void Open();
+        event SerialDataReceivedEventHandler DataReceived;
+
+        #endregion Public Events
+
+        #region Public Methods
 
         /// <summary>
         /// Closes the connection.
         /// </summary>
         void Close();
+
+        /// <summary>
+        /// Opens the connection.
+        /// </summary>
+        void Open();
 
         /// <summary>
         /// Reads a byte from the underlying serial input data stream.
@@ -74,5 +84,7 @@ namespace Solid.Arduino
         /// </summary>
         /// <param name="text">The string to write</param>
         void WriteLine(string text);
+
+        #endregion Public Methods
     }
 }
