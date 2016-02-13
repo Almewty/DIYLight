@@ -11,7 +11,20 @@ namespace RustyDevelopment.AmbiLED
         public Adapter1 Adapter { get; }
 
         public IEnumerable<OutputDevice> OutputDevices
-            => Adapter.Outputs.Select(o => new OutputDevice(Adapter, o.QueryInterface<Output1>()));
+        //        foreach (var output in Adapter.Outputs)
+        //        {
+        //            if (!output.Description.IsAttachedToDesktop)
+        //                continue;
+        //            yield return new OutputDevice(Adapter, output.QueryInterface<Output1>());
+        //        }
+        {
+            get
+            {
+                return Adapter.Outputs.Where(o =>
+                    o.Description.IsAttachedToDesktop).Select(o =>
+                        new OutputDevice(Adapter, o.QueryInterface<Output1>()));
+            }
+        }
 
         #endregion Public Properties
 

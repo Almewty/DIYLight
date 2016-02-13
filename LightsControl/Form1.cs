@@ -60,6 +60,10 @@ namespace LightsControl
             //var desktop = new MonitorCapture(0, 0);
             var screen = Screen.PrimaryScreen.Bounds;
 
+            CaptureManager man = new CaptureManager();
+            man.AddCapture(man.GraphicsAdapters.First().OutputDevices.First());
+            man.StartCapture();
+
             //for (int i = 0; i < 10; i++)
             //    desktop.Filter.Add((byte)(9 - i), new Rectangle(0, (i * 1080) / 10, 200, 1080 / 10));
             //for (int i = 0; i < 17; i++)

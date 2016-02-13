@@ -45,6 +45,7 @@ namespace RustyDevelopment.AmbiLED
 
         public void StartCapturing()
         {
+            _tokenSource?.Cancel();
             _tokenSource = new CancellationTokenSource();
             Task.Factory.StartNew(() => CaptureLoop(_tokenSource.Token), _tokenSource.Token,
                 TaskCreationOptions.LongRunning, TaskScheduler.Default);
@@ -111,7 +112,6 @@ namespace RustyDevelopment.AmbiLED
             _screenTexture?.Dispose();
             _duplicatedOutput?.Dispose();
             _device?.Dispose();
-            _adapter?.Dispose();
 
             _device = new SharpDX.Direct3D11.Device(_adapter);
             _width = _output1.Description.DesktopBounds.Right - _output1.Description.DesktopBounds.Left;

@@ -1,5 +1,6 @@
 ﻿using SharpDX.DXGI;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace RustyDevelopment.AmbiLED
@@ -34,9 +35,11 @@ namespace RustyDevelopment.AmbiLED
 
         #region Public Methods
 
-        public void AddCapture(GraphicsAdapter adapter, OutputDevice device)
+        public void AddCapture(OutputDevice device)
         {
-            _captures.Add(new MonitorCapture(adapter.Adapter, device.Output));
+            var capture = new MonitorCapture(device.Adapter, device.Output);
+            capture.GotFrame += (sender, collection) => Debug.WriteLine("Got frame");
+            _captures.Add(capture);
         }
 
         public void StartCapture()
