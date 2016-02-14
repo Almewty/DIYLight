@@ -56,12 +56,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CaptureManager.cs" />
+    <Compile Include="Condensor.cs" />
     <Compile Include="GraphicsAdapter.cs" />
     <Compile Include="MonitorCapture.cs" />
     <Compile Include="Leds.cs" />
     <Compile Include="OutputDevice.cs" />
     <Compile Include="PixelCollection.cs" />
     <Compile Include="Pixel.cs" />
+    <Compile Include="Processors\IProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ColorSpace.cs" />
   </ItemGroup>

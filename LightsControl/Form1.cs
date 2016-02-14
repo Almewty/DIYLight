@@ -1,6 +1,7 @@
 ﻿using RustyDevelopment.AmbiLED;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,8 +12,7 @@ namespace LightsControl
     public partial class Form1 : Form
     {
         #region Private Fields
-
-        private Leds _leds;
+        
         private CancellationTokenSource cancelTokenSource;
         private List<MonitorCapture> captures;
         private Dictionary<MonitorCapture, Task> captureTasks;
@@ -47,27 +47,29 @@ namespace LightsControl
 
         private void Form1_Load(object sender, EventArgs e)
         {
+
+            //var desktop = new MonitorCapture(0, 0);
+            var screen = Screen.PrimaryScreen.Bounds;
+
+            var filters = new Dictionary<int, Rectangle>();
+
+            for (int i = 0; i < 10; i++)
+                filters.Add((byte)(9 - i), new Rectangle(0, (i * 1080) / 10, 200, 1080 / 10));
+            for (int i = 0; i < 17; i++)
+                filters.Add((byte)(10 + i), new Rectangle((i * 1920) / 17, 0, 1920 / 17, 150));
+
             try
             {
-                _leds = new Leds();
+
+                CaptureManager man = new CaptureManager();
+                man.AddCapture(man.GraphicsAdapters.First().OutputDevices.First(), filters);
+                man.StartCapture();
             }
             catch (InvalidOperationException)
             {
                 MessageBox.Show("No firmata arduino found");
                 Application.Exit();
             }
-
-            //var desktop = new MonitorCapture(0, 0);
-            var screen = Screen.PrimaryScreen.Bounds;
-
-            CaptureManager man = new CaptureManager();
-            man.AddCapture(man.GraphicsAdapters.First().OutputDevices.First());
-            man.StartCapture();
-
-            //for (int i = 0; i < 10; i++)
-            //    desktop.Filter.Add((byte)(9 - i), new Rectangle(0, (i * 1080) / 10, 200, 1080 / 10));
-            //for (int i = 0; i < 17; i++)
-            //    desktop.Filter.Add((byte)(10 + i), new Rectangle((i * 1920) / 17, 0, 1920 / 17, 150));
 
             //desktop.ProcessColor += (index, r, g, b) =>
             //{
@@ -104,7 +106,6 @@ namespace LightsControl
             cancelTokenSource.Cancel();
             Task.WaitAll(captureTasks.Values.ToArray());
             captureTasks.Clear();
-            Task.Delay(100).ContinueWith((tsk) => _leds.SetRGB(0, 0, 0));
         }
 
         #endregion Private Methods
