@@ -15,7 +15,7 @@ namespace RustyDevelopment.AmbiLED
 
         private readonly Factory1 _factory;
 
-        private readonly Dictionary<MonitorCapture, Dictionary<int, Rectangle>> _screenRegions;
+        private readonly Dictionary<MonitorCapture, Dictionary<byte, Rectangle>> _screenRegions;
         private readonly Leds _leds;
 
         #endregion Private Fields
@@ -28,10 +28,10 @@ namespace RustyDevelopment.AmbiLED
         public IEnumerable<GraphicsAdapter> GraphicsAdapters =>
             _factory.Adapters1.Select(a => new GraphicsAdapter(a));
 
-        public IReadOnlyDictionary<MonitorCapture, IReadOnlyDictionary<int, Rectangle>> ScreenRegions
+        public IReadOnlyDictionary<MonitorCapture, IReadOnlyDictionary<byte, Rectangle>> ScreenRegions
             =>
                 _screenRegions.Select(
-                    kvp => new KeyValuePair<MonitorCapture, IReadOnlyDictionary<int, Rectangle>>(kvp.Key, kvp.Value))
+                    kvp => new KeyValuePair<MonitorCapture, IReadOnlyDictionary<byte, Rectangle>>(kvp.Key, kvp.Value))
                     .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
         #endregion Public Properties
@@ -41,7 +41,7 @@ namespace RustyDevelopment.AmbiLED
         public CaptureManager()
         {
             _factory = new Factory1();
-            _screenRegions = new Dictionary<MonitorCapture, Dictionary<int, Rectangle>>();
+            _screenRegions = new Dictionary<MonitorCapture, Dictionary<byte, Rectangle>>();
             _leds = new Leds();
         }
 
@@ -51,28 +51,34 @@ namespace RustyDevelopment.AmbiLED
 
         public void AddCapture(OutputDevice device)
         {
-            AddCapture(device, new Dictionary<int, Rectangle>());
+            AddCapture(device, new Dictionary<byte, Rectangle>());
         }
 
-        public void AddCapture(OutputDevice device, Dictionary<int, Rectangle> regions)
+        public void AddCapture(OutputDevice device, Dictionary<byte, Rectangle> regions)
         {
             var capture = new MonitorCapture(device.Adapter, device.Output);
             capture.GotFrame += Capture_GotFrame;
             _screenRegions.Add(capture, regions);
         }
 
+        private Stopwatch stopwatch = new Stopwatch();
         private void Capture_GotFrame(object sender, PixelCollection pixelCollection)
         {
             var capture = sender as MonitorCapture;
             if (capture == null)
                 return;
+            var ledData = new Tuple<byte, Color>[_screenRegions[capture].Count];
+            int counter = 0;
+            stopwatch.Restart();
             foreach (var ledRegion in _screenRegions[capture])
             {
-                int index = ledRegion.Key;
+                byte index = ledRegion.Key;
                 Color color = Condensor.Condense(pixelCollection, ledRegion.Value);
-                _leds.QueueColor((byte) index, color.R, color.G, color.B);
+
+                ledData[counter++] = Tuple.Create(index, color);
             }
-            _leds.FlushColors();
+            Debug.WriteLine("Condensing: " + stopwatch.ElapsedMilliseconds);
+            _leds.SetLeds(ledData);
         }
 
         public void RemoveCapture(MonitorCapture capture)

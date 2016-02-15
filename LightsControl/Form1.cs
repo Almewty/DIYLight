@@ -51,7 +51,7 @@ namespace LightsControl
             //var desktop = new MonitorCapture(0, 0);
             var screen = Screen.PrimaryScreen.Bounds;
 
-            var filters = new Dictionary<int, Rectangle>();
+            var filters = new Dictionary<byte, Rectangle>();
 
             for (int i = 0; i < 10; i++)
                 filters.Add((byte)(9 - i), new Rectangle(0, (i * 1080) / 10, 200, 1080 / 10));

@@ -7,10 +7,11 @@
 #define LED_TYPE    WS2812B
 #define COLOR_ORDER GRB
 
-#define SET_HUE 0x01
-#define SET_RGB 0x02
-#define QueueColor 0x03
-#define FlushColors 0x04
+#define SET_HUE       0x01
+#define SET_RGB       0x02
+#define QUEUE_COLOR   0x03
+#define FLUSH_COLORS  0x04
+#define SET_LEDS      0x05
 
 CRGB leds[NUM_LEDS];
 
@@ -26,12 +27,27 @@ void sysexCallback(byte command, byte argc, byte *argv) {
         return;
       FastLED.showColor(CRGB(argv[0], argv[1], argv[2]));
       break;
-    case QueueColor:
+    case QUEUE_COLOR:
       if (argc < 4)
         return;
       leds[argv[0]] = CRGB(argv[1], argv[2], argv[3]);
       break;
-    case FlushColors:
+    case FLUSH_COLORS:
+      FastLED.show();
+      break;
+    case SET_LEDS:
+      if (argc < 1)
+        return;
+      byte cnt = argv[0];
+      if (argc < 1 + (cnt * 4))
+        return;
+      for (byte i = 0; i < cnt; ++i) {
+        int offset = i * 4 + 1;
+        leds[argv[offset]] =
+          CRGB(argv[offset + 1],
+               argv[offset + 2],
+               argv[offset + 3]);
+      }
       FastLED.show();
       break;
   }

@@ -2,6 +2,7 @@
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Device = SharpDX.Direct3D11.Device;
@@ -70,6 +71,8 @@ namespace RustyDevelopment.AmbiLED
 
         #region Private Methods
 
+        private Stopwatch stopwatch = new Stopwatch();
+
         private void Capture()
         {
             try
@@ -89,8 +92,10 @@ namespace RustyDevelopment.AmbiLED
                     // Get the desktop capture texture
                     var mapSource = _device.ImmediateContext.MapSubresource(_screenTexture, 0, MapMode.Read, MapFlags.None);
 
+                    stopwatch.Restart();
                     // Send captured frame
                     GotFrame?.Invoke(this, new PixelCollection(mapSource.DataPointer, _height, _width));
+                    Debug.WriteLine("GotFrame: " + stopwatch.ElapsedMilliseconds);
 
                     // Release source and dest locks
                     _device.ImmediateContext.UnmapSubresource(_screenTexture, 0);
