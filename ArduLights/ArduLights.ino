@@ -33,8 +33,6 @@ int decodeBase128(byte *buf, int length) {
 }
 
 void sysexCallback(byte command, byte argc, byte *argv) {
-  Firmata.write(command);
-  Firmata.write(argc);
   argc = decodeBase128(argv, argc);
   switch (command) {
     case SET_HUE:
