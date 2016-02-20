@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using RustyDevelopment.AmbiLED.Dummy;
 
 namespace RustyDevelopment.AmbiLED
 {
@@ -24,8 +23,7 @@ namespace RustyDevelopment.AmbiLED
 
         public Leds()
         {
-            //var serial = new SerialConnection("COM3", SerialBaudRate.Bps115200);
-            var serial = new EmulatorConnection();
+            var serial = new SerialConnection("COM3", SerialBaudRate.Bps115200);
             //var serial = SerialConnection.FindSerialConnection();
             if (serial == null)
                 throw new InvalidOperationException();
