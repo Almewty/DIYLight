@@ -37,10 +37,10 @@ namespace Solid.Arduino.Firmata
             }
             else
             {
-                for (int x = 0; x < data.Length; x++)
+                foreach (byte b in data)
                 {
-                    chars[charIndex++] = ConvertToChar(data[x] >> 4);
-                    chars[charIndex++] = ConvertToChar(data[x] & 0x0F);
+                    chars[charIndex++] = ConvertToChar(b >> 4);
+                    chars[charIndex++] = ConvertToChar(b & 0x0F);
                 }
             }
 

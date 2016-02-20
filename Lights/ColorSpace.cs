@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+// ReSharper disable CompareOfFloatsByEqualityOperator
 
 namespace RustyDevelopment.AmbiLED
 {
@@ -33,7 +34,7 @@ namespace RustyDevelopment.AmbiLED
         /// Es wurd <see cref="Color.Empty"/> übergeben und somit kann keine
         /// Konvertierung durchgeführt werden.
         /// </exception>
-        public static double[] RGB2HSV(Color color)
+        public static double[] Rgb2Hsv(Color color)
         {
             if (color == Color.Empty) throw new ArgumentException();
             //-----------------------------------------------------------------
@@ -57,10 +58,9 @@ namespace RustyDevelopment.AmbiLED
                 h = 60 * (b - r) / (max - min) + 120;
             else if (max == b)
                 h = 60 * (r - g) / (max - min) + 240;
+            double s = max == 0 ? 0 : 1 - min / max;
 
-            double s = (max == 0) ? 0 : 1 - min / max;
-
-            return new double[] { h, s, max };
+            return new[] { h, s, max };
         }
 
         //---------------------------------------------------------------------
@@ -91,8 +91,8 @@ namespace RustyDevelopment.AmbiLED
         /// </a>
         /// </para>
         /// </remarks>
-        /// <seealso cref="Lab2RGB"/>
-        public static double[] RGB2Lab(Color color)
+        /// <seealso cref="Lab2Rgb"/>
+        public static double[] Rgb2Lab(Color color)
         {
             if (color == Color.Empty) throw new ArgumentException();
             //-----------------------------------------------------------------
@@ -106,37 +106,37 @@ namespace RustyDevelopment.AmbiLED
 
             // RGB -> XYZ. Dabei selben Referenzweißpunkt D65 verwenden:
             double[] xyz = new double[3];
-            double[,] C_xr =
+            double[,] cXr =
             {
                 { 0.412453, 0.357580, 0.180423 },
                 { 0.212671, 0.715160, 0.072169 },
                 { 0.019334, 0.119193, 0.950227 }
             };
 
-            xyz[0] = C_xr[0, 0] * rgb[0] + C_xr[0, 1] * rgb[1] + C_xr[0, 2] * rgb[2];
-            xyz[1] = C_xr[1, 0] * rgb[0] + C_xr[1, 1] * rgb[1] + C_xr[1, 2] * rgb[2];
-            xyz[2] = C_xr[2, 0] * rgb[0] + C_xr[2, 1] * rgb[1] + C_xr[2, 2] * rgb[2];
+            xyz[0] = cXr[0, 0] * rgb[0] + cXr[0, 1] * rgb[1] + cXr[0, 2] * rgb[2];
+            xyz[1] = cXr[1, 0] * rgb[0] + cXr[1, 1] * rgb[1] + cXr[1, 2] * rgb[2];
+            xyz[2] = cXr[2, 0] * rgb[0] + cXr[2, 1] * rgb[1] + cXr[2, 2] * rgb[2];
 
             // Auf Referenzpunkt normieren:
-            double[] XYZ = new double[3];
-            for (int i = 0; i < XYZ.Length; i++)
-                XYZ[i] = xyz[i] / Xn[i];
+            double[] xyz2 = new double[3];
+            for (int i = 0; i < xyz2.Length; i++)
+                xyz2[i] = xyz[i] / Xn[i];
 
             // Schwellenwert:
             const double T = 0.008856;
 
-            bool XT = XYZ[0] > T;
-            bool YT = XYZ[1] > T;
-            bool ZT = XYZ[2] > T;
-            double Y3 = Math.Pow(XYZ[1], 1d / 3d);
+            bool xt = xyz2[0] > T;
+            bool yt = xyz2[1] > T;
+            bool zt = xyz2[2] > T;
+            double y3 = Math.Pow(xyz2[1], 1d / 3d);
 
             // Nichtlinear Projektion von XYZ -> Lab:
-            double fX = XT ? Math.Pow(XYZ[0], 1d / 3d) : 7.787 * XYZ[0] + 16d / 116d;
-            double fY = YT ? Y3 : 7.787 * XYZ[1] + 16d / 116d;
-            double fZ = ZT ? Math.Pow(XYZ[2], 1d / 3d) : 7.787 * XYZ[1] + 16d / 116d;
+            double fX = xt ? Math.Pow(xyz2[0], 1d / 3d) : 7.787 * xyz2[0] + 16d / 116d;
+            double fY = yt ? y3 : 7.787 * xyz2[1] + 16d / 116d;
+            double fZ = zt ? Math.Pow(xyz2[2], 1d / 3d) : 7.787 * xyz2[1] + 16d / 116d;
 
             double[] lab = new double[3];
-            lab[0] = YT ? 116d * Y3 - 16d : 903.3 * XYZ[1];
+            lab[0] = yt ? 116d * y3 - 16d : 903.3 * xyz2[1];
             lab[1] = 500d * (fX - fY);
             lab[2] = 200d * (fY - fZ);
 
@@ -180,7 +180,7 @@ namespace RustyDevelopment.AmbiLED
         /// </a>
         /// </para>
         /// </remarks>
-        public static Color HSV2RGB(double[] hsv)
+        public static Color Hsv2Rgb(double[] hsv)
         {
             if (hsv == null) throw new ArgumentNullException();
 
@@ -190,11 +190,12 @@ namespace RustyDevelopment.AmbiLED
             if (hsv[1] < 0 || hsv[1] > 1) throw new ArgumentException();
             if (hsv[2] < 0 || hsv[2] > 1) throw new ArgumentException();
             //-----------------------------------------------------------------
-            double[] rgb = null;
+            double[] rgb;
 
             // Wenn die Sättigung 0 ist -> Graustufen:
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
             if (hsv[1] == 0)
-                rgb = new double[] { hsv[2], hsv[2], hsv[2] };
+                rgb = new[] { hsv[2], hsv[2], hsv[2] };
             else
             {
                 // Das Farbenrad ist in 6 Sektoren geteilt. Ermitteln in
@@ -213,28 +214,27 @@ namespace RustyDevelopment.AmbiLED
                 switch (sectorNumber)
                 {
                     case 0:
-                        rgb = new double[] { hsv[2], t, p };
+                        rgb = new[] { hsv[2], t, p };
                         break;
 
                     case 1:
-                        rgb = new double[] { q, hsv[2], p };
+                        rgb = new[] { q, hsv[2], p };
                         break;
 
                     case 2:
-                        rgb = new double[] { p, hsv[2], t };
+                        rgb = new[] { p, hsv[2], t };
                         break;
 
                     case 3:
-                        rgb = new double[] { p, q, hsv[2] };
+                        rgb = new[] { p, q, hsv[2] };
                         break;
 
                     case 4:
-                        rgb = new double[] { t, p, hsv[2] };
+                        rgb = new[] { t, p, hsv[2] };
                         break;
 
-                    case 5:
                     default:
-                        rgb = new double[] { hsv[2], p, q };
+                        rgb = new[] { hsv[2], p, q };
                         break;
                 }
             }
@@ -286,8 +286,8 @@ namespace RustyDevelopment.AmbiLED
         /// </a>
         /// </para>
         /// </remarks>
-        /// <seealso cref="RGB2Lab"/>
-        public static Color Lab2RGB(double[] lab)
+        /// <seealso cref="Rgb2Lab"/>
+        public static Color Lab2Rgb(double[] lab)
         {
             if (lab == null)
                 throw new ArgumentNullException();
@@ -295,43 +295,43 @@ namespace RustyDevelopment.AmbiLED
             if (lab.Length != 3)
                 throw new ArgumentException();
             //-----------------------------------------------------------------
-            double[] XYZ = new double[3];
-            const double T1 = 0.008856;
-            const double T2 = 0.206893;
+            double[] xyz = new double[3];
+            const double t1 = 0.008856;
+            const double t2 = 0.206893;
 
             // Y berechnen:
             double fY = Math.Pow((lab[0] + 16d) / 116d, 3);
-            bool YT = fY > T1;
-            fY = YT ? fY : lab[0] / 903.3;
-            XYZ[1] = fY;
+            bool yt = fY > t1;
+            fY = yt ? fY : lab[0] / 903.3;
+            xyz[1] = fY;
 
             // fY leicht modifizieren für die weiteren Berechnungen:
-            fY = YT ? Math.Pow(fY, 1d / 3d) : 7.787 * fY + 16d / 116d;
+            fY = yt ? Math.Pow(fY, 1d / 3d) : 7.787 * fY + 16d / 116d;
 
             // X berechnen:
             double fX = lab[1] / 500d + fY;
-            XYZ[0] = fX > T2 ? Math.Pow(fX, 3) : (fX - 16d / 116d) / 7.787;
+            xyz[0] = fX > t2 ? Math.Pow(fX, 3) : (fX - 16d / 116d) / 7.787;
 
             // Z berechnen:
             double fZ = fY - lab[2] / 200d;
-            XYZ[2] = fZ > T2 ? Math.Pow(fZ, 3) : (fZ - 16d / 116d) / 7.787;
+            xyz[2] = fZ > t2 ? Math.Pow(fZ, 3) : (fZ - 16d / 116d) / 7.787;
 
             // Auf Referenzweiß D65 normalisieren:
-            for (int i = 0; i < XYZ.Length; i++)
-                XYZ[i] *= Xn[i];
+            for (int i = 0; i < xyz.Length; i++)
+                xyz[i] *= Xn[i];
 
             // XYZ -> RGB. Dabei selben Referenzweißpunkt D65 verwenden:
             double[] rgb = new double[3];
-            double[,] C_rx =
+            double[,] cRx =
             {
                 { 3.240479, -1.537150, -0.498535 },
                 { -0.969256, 1.875992, 0.041556 },
                 { 0.055648, -0.204043, 1.057311 }
             };
 
-            rgb[0] = C_rx[0, 0] * XYZ[0] + C_rx[0, 1] * XYZ[1] + C_rx[0, 2] * XYZ[2];
-            rgb[1] = C_rx[1, 0] * XYZ[0] + C_rx[1, 1] * XYZ[1] + C_rx[1, 2] * XYZ[2];
-            rgb[2] = C_rx[2, 0] * XYZ[0] + C_rx[2, 1] * XYZ[1] + C_rx[2, 2] * XYZ[2];
+            rgb[0] = cRx[0, 0] * xyz[0] + cRx[0, 1] * xyz[1] + cRx[0, 2] * xyz[2];
+            rgb[1] = cRx[1, 0] * xyz[0] + cRx[1, 1] * xyz[1] + cRx[1, 2] * xyz[2];
+            rgb[2] = cRx[2, 0] * xyz[0] + cRx[2, 1] * xyz[1] + cRx[2, 2] * xyz[2];
 
             // RGB in [0,1] -> RGB in [0,255]. Dabei auch die Wert in dieses
             // Intervall zwingen:

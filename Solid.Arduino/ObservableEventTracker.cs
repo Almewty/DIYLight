@@ -9,7 +9,7 @@ namespace Solid.Arduino
 
         protected readonly TSource TrackingSource;
         protected readonly List<IObserver<TTracked>> Observers = new List<IObserver<TTracked>>();
-        protected bool IsDisposed = false;
+        protected bool IsDisposed;
 
         #endregion Protected Fields
 

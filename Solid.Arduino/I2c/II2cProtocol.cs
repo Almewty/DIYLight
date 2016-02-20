@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Solid.Arduino.Firmata;
 
 namespace Solid.Arduino.I2C
 {

@@ -6,17 +6,16 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using LightsControl.Properties;
 
 namespace LightsControl
 {
     public partial class Form1 : Form
     {
         #region Private Fields
-        
-        private CancellationTokenSource cancelTokenSource;
-        private List<MonitorCapture> captures;
-        private Dictionary<MonitorCapture, Task> captureTasks;
-        private Dictionary<MonitorCapture, Tuple<int, int, int, int>> usedScreens;
+
+        private readonly CancellationTokenSource _cancelTokenSource;
+        private readonly Dictionary<MonitorCapture, Task> _captureTasks;
 
         #endregion Private Fields
 
@@ -25,10 +24,8 @@ namespace LightsControl
         public Form1()
         {
             InitializeComponent();
-            usedScreens = new Dictionary<MonitorCapture, Tuple<int, int, int, int>>();
-            cancelTokenSource = new CancellationTokenSource();
-            captures = new List<MonitorCapture>();
-            captureTasks = new Dictionary<MonitorCapture, Task>();
+            _cancelTokenSource = new CancellationTokenSource();
+            _captureTasks = new Dictionary<MonitorCapture, Task>();
         }
 
         #endregion Public Constructors
@@ -47,27 +44,22 @@ namespace LightsControl
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
-            //var desktop = new MonitorCapture(0, 0);
-            var screen = Screen.PrimaryScreen.Bounds;
-
             var filters = new Dictionary<byte, Rectangle>();
 
             for (int i = 0; i < 10; i++)
-                filters.Add((byte)(9 - i), new Rectangle(0, (i * 1080) / 10, 200, 1080 / 10));
+                filters.Add((byte)(9 - i), new Rectangle(0, i * 1080 / 10, 200, 1080 / 10));
             for (int i = 0; i < 17; i++)
-                filters.Add((byte)(10 + i), new Rectangle((i * 1920) / 17, 0, 1920 / 17, 150));
+                filters.Add((byte)(10 + i), new Rectangle(i * 1920 / 17, 0, 1920 / 17, 150));
 
             try
             {
-
                 CaptureManager man = new CaptureManager();
                 man.AddCapture(man.GraphicsAdapters.First().OutputDevices.First(), filters);
                 man.StartCapture();
             }
             catch (InvalidOperationException)
             {
-                MessageBox.Show("No firmata arduino found");
+                MessageBox.Show(Resources.No_firmata_arduino_found);
                 Application.Exit();
             }
 
@@ -86,26 +78,13 @@ namespace LightsControl
 
         private void Start()
         {
-            cancelTokenSource = new CancellationTokenSource();
-            foreach (var desktop in captures)
-            {
-                desktop.StartCapturing();
-                //captureTasks.Add(desktop, Task.Run(() =>
-                //{
-                //    while (!cancelTokenSource.IsCancellationRequested)
-                //    {
-                //        //desktop.Capture();
-                //        _leds.FlushColors();
-                //    }
-                //}));
-            }
         }
 
         private void Stop()
         {
-            cancelTokenSource.Cancel();
-            Task.WaitAll(captureTasks.Values.ToArray());
-            captureTasks.Clear();
+            _cancelTokenSource.Cancel();
+            Task.WaitAll(_captureTasks.Values.ToArray());
+            _captureTasks.Clear();
         }
 
         #endregion Private Methods

@@ -9,8 +9,6 @@
     {
         #region Private Fields
 
-        private readonly string _text;
-
         #endregion Private Fields
 
         #region Public Properties
@@ -18,7 +16,7 @@
         /// <summary>
         /// Gets the string value being received.
         /// </summary>
-        public string Text { get { return _text; } }
+        public string Text { get; }
 
         #endregion Public Properties
 
@@ -26,7 +24,7 @@
 
         internal StringEventArgs(string text)
         {
-            _text = text;
+            Text = text;
         }
 
         #endregion Internal Constructors

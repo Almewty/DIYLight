@@ -29,10 +29,6 @@ namespace Solid.Arduino.Firmata
     {
         #region Private Fields
 
-        private readonly DateTime _time;
-        private readonly MessageType _type;
-        private readonly ValueType _value;
-
         #endregion Private Fields
 
         #region Public Properties
@@ -40,17 +36,17 @@ namespace Solid.Arduino.Firmata
         /// <summary>
         /// Gets the time of the delivered message.
         /// </summary>
-        public DateTime Time { get { return _time; } }
+        public DateTime Time { get; }
 
         /// <summary>
         /// Gets the type enumeration of the message.
         /// </summary>
-        public MessageType Type { get { return _type; } }
+        public MessageType Type { get; }
 
         /// <summary>
         /// Gets the specific value delivered by the message.
         /// </summary>
-        public ValueType Value { get { return _value; } }
+        public ValueType Value { get; }
 
         #endregion Public Properties
 
@@ -81,9 +77,9 @@ namespace Solid.Arduino.Firmata
         /// <param name="time"></param>
         internal FirmataMessage(ValueType value, MessageType type, DateTime time)
         {
-            _value = value;
-            _type = type;
-            _time = time;
+            Value = value;
+            Type = type;
+            Time = time;
         }
 
         #endregion Internal Constructors

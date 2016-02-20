@@ -9,8 +9,6 @@ namespace Solid.Arduino.I2C
     {
         #region Private Fields
 
-        private readonly I2CReply _value;
-
         #endregion Private Fields
 
         #region Public Properties
@@ -18,7 +16,7 @@ namespace Solid.Arduino.I2C
         /// <summary>
         /// Gets the I2C message value being received.
         /// </summary>
-        public I2CReply Value { get { return _value; } }
+        public I2CReply Value { get; }
 
         #endregion Public Properties
 
@@ -26,7 +24,7 @@ namespace Solid.Arduino.I2C
 
         internal I2CEventArgs(I2CReply value)
         {
-            _value = value;
+            Value = value;
         }
 
         #endregion Internal Constructors

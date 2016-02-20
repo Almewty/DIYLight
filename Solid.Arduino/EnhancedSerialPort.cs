@@ -167,10 +167,7 @@ namespace Solid.Arduino
         {
             var handler = (SerialDataReceivedEventHandler)Events[_dataReceived];
 
-            if (handler != null)
-            {
-                handler(this, args);
-            }
+            handler?.Invoke(this, args);
         }
 
         private bool Poll(Stream stream)

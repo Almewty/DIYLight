@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="CaptureManager.cs" />
     <Compile Include="Condensor.cs" />
+    <Compile Include="Dummy\EmulatorConnection.cs" />
     <Compile Include="GraphicsAdapter.cs" />
     <Compile Include="MonitorCapture.cs" />
     <Compile Include="Leds.cs" />

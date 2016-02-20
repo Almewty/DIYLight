@@ -10,8 +10,6 @@ namespace Solid.Arduino.Firmata
     {
         #region Private Fields
 
-        private readonly FirmataMessage _value;
-
         #endregion Private Fields
 
         #region Public Properties
@@ -19,7 +17,7 @@ namespace Solid.Arduino.Firmata
         /// <summary>
         /// Gets the received message.
         /// </summary>
-        public FirmataMessage Value { get { return _value; } }
+        public FirmataMessage Value { get; }
 
         #endregion Public Properties
 
@@ -27,7 +25,7 @@ namespace Solid.Arduino.Firmata
 
         internal FirmataMessageEventArgs(FirmataMessage value)
         {
-            _value = value;
+            Value = value;
         }
 
         #endregion Internal Constructors

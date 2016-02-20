@@ -16,7 +16,7 @@ namespace Solid.Arduino
         /// Initializes a new instance of <see cref="EnhancedSerialConnection"/> class using the highest serial port available at 115,200 bits per second.
         /// </summary>
         public EnhancedSerialConnection()
-            : base(GetLastPortName(), (int)SerialBaudRate.Bps_115200)
+            : base(GetLastPortName(), (int)SerialBaudRate.Bps115200)
         {
             ReadTimeout = 100;
             WriteTimeout = 100;
@@ -35,8 +35,6 @@ namespace Solid.Arduino
         }
 
         #endregion Constructors
-
-
 
         #region Public Methods & Properties
 
@@ -69,8 +67,8 @@ namespace Solid.Arduino
 
         private static string GetLastPortName()
         {
-            return (from p in SerialPort.GetPortNames()
-                    where (p.StartsWith(@"/dev/ttyUSB") || p.StartsWith(@"/dev/ttyAMA") || p.StartsWith(@"/dev/ttyACM") || p.StartsWith("COM"))
+            return (from p in GetPortNames()
+                    where p.StartsWith(@"/dev/ttyUSB") || p.StartsWith(@"/dev/ttyAMA") || p.StartsWith(@"/dev/ttyACM") || p.StartsWith("COM")
                     orderby p descending
                     select p).First();
         }

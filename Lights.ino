@@ -15,7 +15,27 @@
 
 CRGB leds[NUM_LEDS];
 
+int decodeBase128(byte *buf, int length) {
+  int processed = 0;
+  byte highMap = buf[((length - 1) < 7 ? length - 1 : 7)];
+  int highPos = 0;
+  for (int i = 0; i < (length - 1); i++)
+  {
+    if ((i + 1) % 8 == 0)
+    {
+      highMap = buf[(length - 1 <  i + 8 ? length - 1 : i + 8)];
+      highPos = 0;
+      continue;
+    }
+    buf[processed++] = buf[i] | ((highMap << ++highPos) & 0x80);
+  }
+  return processed;
+}
+
 void sysexCallback(byte command, byte argc, byte *argv) {
+  Firmata.write(command);
+  Firmata.write(argc);
+  argc = decodeBase128(argv, argc);
   switch (command) {
     case SET_HUE:
       if (argc < 1)
@@ -65,7 +85,7 @@ void setupFastLed() {
 void setupFirmata() {
   Firmata.setFirmwareVersion(FIRMATA_FIRMWARE_MAJOR_VERSION, FIRMATA_FIRMWARE_MINOR_VERSION);
   Firmata.attach(START_SYSEX, sysexCallback);
-  Firmata.begin(57600);
+  Firmata.begin(115200);
 }
 
 void setup() {

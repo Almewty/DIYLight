@@ -16,6 +16,7 @@ namespace RustyDevelopment.AmbiLED
     {
         #region Private Fields
 
+        private readonly Stopwatch _stopwatch = new Stopwatch();
         private Device _device;
         private OutputDuplication _duplicatedOutput;
         private bool _gotFirstFrame;
@@ -71,8 +72,6 @@ namespace RustyDevelopment.AmbiLED
 
         #region Private Methods
 
-        private Stopwatch stopwatch = new Stopwatch();
-
         private void Capture()
         {
             try
@@ -92,10 +91,10 @@ namespace RustyDevelopment.AmbiLED
                     // Get the desktop capture texture
                     var mapSource = _device.ImmediateContext.MapSubresource(_screenTexture, 0, MapMode.Read, MapFlags.None);
 
-                    stopwatch.Restart();
+                    _stopwatch.Restart();
                     // Send captured frame
                     GotFrame?.Invoke(this, new PixelCollection(mapSource.DataPointer, _height, _width));
-                    Debug.WriteLine("GotFrame: " + stopwatch.ElapsedMilliseconds);
+                    Debug.WriteLine("GotFrame: " + _stopwatch.ElapsedMilliseconds);
 
                     // Release source and dest locks
                     _device.ImmediateContext.UnmapSubresource(_screenTexture, 0);

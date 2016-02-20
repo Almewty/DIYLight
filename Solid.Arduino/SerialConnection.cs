@@ -17,19 +17,19 @@ namespace Solid.Arduino
 
         private static readonly SerialBaudRate[] PopularBaudRates =
         {
-            SerialBaudRate.Bps_9600,
-            SerialBaudRate.Bps_57600,
-            SerialBaudRate.Bps_115200
+            SerialBaudRate.Bps9600,
+            SerialBaudRate.Bps57600,
+            SerialBaudRate.Bps115200
         };
 
         private static readonly SerialBaudRate[] OtherBaudRates =
         {
-            SerialBaudRate.Bps_28800,
-            SerialBaudRate.Bps_14400,
-            SerialBaudRate.Bps_38400,
+            SerialBaudRate.Bps28800,
+            SerialBaudRate.Bps14400,
+            SerialBaudRate.Bps38400,
             //SerialBaudRate.Bps_31250,
-            SerialBaudRate.Bps_4800,
-            SerialBaudRate.Bps_2400
+            SerialBaudRate.Bps4800,
+            SerialBaudRate.Bps2400
         };
 
         private bool _isDisposed;
@@ -42,7 +42,7 @@ namespace Solid.Arduino
         /// Initializes a new instance of <see cref="SerialConnection"/> class using the highest COM-port available at 115,200 bits per second.
         /// </summary>
         public SerialConnection()
-            : base(GetHighestComPortName(), (int)SerialBaudRate.Bps_115200)
+            : base(GetHighestComPortName(), (int)SerialBaudRate.Bps115200)
         {
             ReadTimeout = 100;
             WriteTimeout = 100;
@@ -61,8 +61,6 @@ namespace Solid.Arduino
         }
 
         #endregion Constructors
-
-
 
         #region Public Methods & Properties
 
@@ -195,10 +193,10 @@ namespace Solid.Arduino
         public static ISerialConnection FindSerialConnection(string query, string expectedReply)
         {
             if (string.IsNullOrEmpty(query))
-                throw new ArgumentException(Messages.ArgumentEx_NotNullOrEmpty, "query");
+                throw new ArgumentException(Messages.ArgumentEx_NotNullOrEmpty, nameof(query));
 
             if (string.IsNullOrEmpty(expectedReply))
-                throw new ArgumentException(Messages.ArgumentEx_NotNullOrEmpty, "expectedReply");
+                throw new ArgumentException(Messages.ArgumentEx_NotNullOrEmpty, nameof(expectedReply));
 
             Func<ArduinoSession, bool> isAvailableFunc = session =>
                 {
