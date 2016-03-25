@@ -9,6 +9,7 @@ namespace RustyDevelopment.AmbiLED
         private const byte SetRgbCommand = 0x02;
         private const byte QueueColorCommand = 0x03;
         private const byte FlushColorsCommand = 0x04;
+        private const byte SetLedCountCommand = 0x05;
         private readonly ArduinoSession _session;
 
         public Leds()
@@ -24,7 +25,7 @@ namespace RustyDevelopment.AmbiLED
             _session.SendSysExCommand(SetHueCommand, hue);
         }
 
-        public void SetRGB(byte r, byte g, byte b)
+        public void SetRgb(byte r, byte g, byte b)
         {
             _session.SendSysExCommand(SetRgbCommand, r, g, b);
         }
@@ -37,6 +38,11 @@ namespace RustyDevelopment.AmbiLED
         public void FlushColors()
         {
             _session.SendSysExCommand(FlushColorsCommand);
+        }
+
+        public void SetLedCount(byte count)
+        {
+            _session.SendSysExCommand(SetLedCountCommand, count);
         }
     }
 }
